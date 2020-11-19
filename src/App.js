@@ -1,25 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import axios from "axios";
 
-function App() {
+import "./App.css";
+
+const App = () => {
+  const [file, setFile] = useState(null);
+  const [error, setError] = useState(null);
+
+  const onChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.type === "text/csv") setFile(selectedFile);
+      else {
+        setFile(null);
+        setError("Only csv files are supported! Try again.");
+      }
+    }
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("data", file);
+    formData.append("separator", ",");
+
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const res = await axios.post(
+        "http://134.209.153.159:4000/products/upload",
+        formData,
+        config
+      );
+      console.log(res.data);
+    } catch (error) {
+      setError(error);
+      console.log(error);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={onSubmit}>
+        <h4>CSV Upload</h4>
+        <input type="file" name="data" onChange={onChange} />
+        <button type="submit">Upload</button>
+        {error && <p>{error.message}</p>}
+      </form>
     </div>
   );
-}
+};
 
 export default App;
