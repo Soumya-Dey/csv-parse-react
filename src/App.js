@@ -6,6 +6,7 @@ import "./App.css";
 const App = () => {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
+  const [results, setResults] = useState([]);
 
   const onChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -38,6 +39,7 @@ const App = () => {
         config
       );
       console.log(res.data);
+      if (res.data.results) setResults(res.data.results);
     } catch (error) {
       setError(error);
       console.log(error);
@@ -51,6 +53,8 @@ const App = () => {
         <input type="file" name="data" onChange={onChange} />
         <button type="submit">Upload</button>
         {error && <p>{error.message}</p>}
+        {results &&
+          results.map((result) => <p key={result._id}>{result.productName}</p>)}
       </form>
     </div>
   );

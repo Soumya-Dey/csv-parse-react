@@ -1,8 +1,16 @@
 body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
   background-color: #f5f5f5;
+  font-family: "Lato", sans-serif;
 }
 
 .App {
   text-align: center;
-  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 60px;
+}
+
+p {
+  font-size: 12px;
 }
