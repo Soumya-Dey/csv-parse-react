@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import CSVReader from "react-csv-reader";
 
 import "./App.css";
 
@@ -48,6 +49,7 @@ const App = () => {
 
   return (
     <div className="App">
+      {/* parse in backend, save in backend */}
       <form onSubmit={onSubmit}>
         <h4>CSV Upload</h4>
         <input type="file" name="data" onChange={onChange} />
@@ -56,6 +58,18 @@ const App = () => {
         {results &&
           results.map((result) => <p key={result._id}>{result.productName}</p>)}
       </form>
+
+      {/* parse in frontend, save in backend */}
+      {/* <CSVReader
+        parserOptions={{ header: true, skipEmptyLines: true }}
+        onFileLoaded={(data, fileInfo) => {
+          console.dir(data);
+          if (data) setResults(data);
+        }}
+      />
+      {error && <p>{error.message}</p>}
+      {results &&
+        results.map((result, index) => <p key={index}>{result.productName}</p>)} */}
     </div>
   );
 };
