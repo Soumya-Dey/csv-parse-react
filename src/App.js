@@ -5,71 +5,51 @@ import CSVReader from "react-csv-reader";
 import "./App.css";
 
 const App = () => {
-  const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
   const [results, setResults] = useState([]);
 
-  const onChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      if (selectedFile.type === "text/csv") setFile(selectedFile);
-      else {
-        setFile(null);
-        setError("Only csv files are supported! Try again.");
-      }
-    }
-  };
+  const onSubmit = async (e) => {
+    e.preventDefault();
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData();
-    formData.append("data", file);
-    formData.append("separator", ",");
+    const data = {
+      products: results,
+    };
 
     const config = {
       headers: {
-        "content-type": "multipart/form-data",
+        "content-type": "application/json",
       },
     };
 
-    try {
-      const res = await axios.post(
-        "http://134.209.153.159:4000/products/upload",
-        formData,
-        config
-      );
-      console.log(res.data);
-      if (res.data.results) setResults(res.data.results);
-    } catch (error) {
-      setError(error);
-      console.log(error);
-    }
+    const res = await axios.post(
+      "http://localhost:4000/products/upload", // change this link to the actual server api link
+      data,
+      config
+    );
+
+    console.log(res.data);
   };
 
   return (
     <div className="App">
-      {/* parse in backend, save in backend */}
+      {/* parse in frontend, save in backend */}
+      <h4>CSV Upload</h4>
       <form onSubmit={onSubmit}>
-        <h4>CSV Upload</h4>
-        <input type="file" name="data" onChange={onChange} />
-        <button type="submit">Upload</button>
-        {error && <p>{error.message}</p>}
-        {results &&
-          results.map((result) => <p key={result._id}>{result.productName}</p>)}
+        <CSVReader
+          parserOptions={{ header: true, skipEmptyLines: true }}
+          onFileLoaded={(data, fileInfo) => {
+            if (data) setResults(data);
+          }}
+          onError={(error) => {
+            console.log(error);
+            setError(error.message);
+          }}
+        />
+
+        <input type="submit" value="upload"></input>
       </form>
 
-      {/* parse in frontend, save in backend */}
-      {/* <CSVReader
-        parserOptions={{ header: true, skipEmptyLines: true }}
-        onFileLoaded={(data, fileInfo) => {
-          console.dir(data);
-          if (data) setResults(data);
-        }}
-      />
       {error && <p>{error.message}</p>}
-      {results &&
-        results.map((result, index) => <p key={index}>{result.productName}</p>)} */}
     </div>
   );
 };
