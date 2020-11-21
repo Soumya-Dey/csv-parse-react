@@ -53,7 +53,7 @@ const App = () => {
       </form>
 
       {error && <p>{error.message}</p>}
-      {loading && <p>uploading...</p>}
+      {loading && <p>Uploading...</p>}
     </div>
   );
 };
