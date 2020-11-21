@@ -7,9 +7,11 @@ import "./App.css";
 const App = () => {
   const [error, setError] = useState(null);
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const data = {
       products: results,
@@ -22,11 +24,12 @@ const App = () => {
     };
 
     const res = await axios.post(
-      "http://localhost:4000/products/upload", // change this link to the actual server api link
+      "http://134.209.153.159:4000/products/upload",
       data,
       config
     );
 
+    if (res.data) setLoading(false);
     console.log(res.data);
   };
 
@@ -50,6 +53,7 @@ const App = () => {
       </form>
 
       {error && <p>{error.message}</p>}
+      {loading && <p>uploading...</p>}
     </div>
   );
 };
